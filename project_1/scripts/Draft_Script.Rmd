@@ -1,0 +1,22 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(data.table)
+```
+
+```{r}
+UMD.data=fread(file="C:/Users/alex/Documents/GitHub/bios611-projects-fall-2019-arquinter/project_1/data/UMD_Services_Provided_20190719.tsv")
+UMD.derived = mutate(UMD.data, ndate=as.Date(Date, "%m/%d/%Y"))
+food.reg.df = na.omit(select(UMD.derived, ndate, `Food Pounds`))
+school.reg.df = na.omit(select(UMD.derived, ndate, `School Kits`))
+summary(lm(`Food Pounds`~ndate, data = food.reg.df))
+```
