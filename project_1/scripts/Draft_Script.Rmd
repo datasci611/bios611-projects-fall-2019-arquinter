@@ -7,17 +7,25 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+Introduction:
+
+Urban Ministries is a non-profit organization that seeks to provide food, job opportunities, and other services to the homeless community of Durham and the surrounding area. Using the data provided by UM, I hope to provide meaningful insight into how the services they provide have changed over time, particularly with respect to the amount of food and school
+supplies the organization has provided to their clientele.
+
+
 ```{r, echo=FALSE}
 library(tidyverse)
 library(ggplot2)
 library(data.table)
 ```
 
+First, I decided to see if the amount of food and school supplies provided by the charity using two separate linear models. In both cases, I only used data starting from 1990, as this was the point when data started to be collected on a continuous basis. Additionally, I chose to run two separate models as the amount of times food was provided far exceeded the amount of times school supplies were provided, and to include them both in a single model would lead to the majority of food observations being dropped from the analysis, due to missing values for school supplies provided.   
+
 ```{r}
 UMD.data=fread(file="C:/Users/alex/Documents/GitHub/bios611-projects-fall-2019-arquinter/project_1/data/UMD_Services_Provided_20190719.tsv")
 UMD.derived = UMD.data %>% mutate(ndate=as.Date(Date, "%m/%d/%Y")) %>% mutate(year=as.factor(format(as.Date(Date, "%m/%d/%Y"), "%Y")))
 food.reg.df = na.omit(select(UMD.derived, ndate, year, `Food Pounds`)) %>%
-  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981")) %>% droplevels()
+  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981"), `Food Pounds` < 1000) %>% droplevels()
 school.reg.df = na.omit(select(UMD.derived, ndate, year, `School Kits`)) %>%
   filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981")) %>% droplevels()
 summary(lm(`Food Pounds`~ndate, data = food.reg.df))
@@ -25,3 +33,21 @@ summary(aov(`Food Pounds`~year, data = food.reg.df))
 summary(lm(`School Kits`~ndate, data = school.reg.df))
 summary(aov(`School Kits`~year, data = school.reg.df))
 ```
+
+From the constructed ANOVA models, it was clear that the average amount of food and school supplies provided were not constant over time, the significant value of the slope of the regression line pointed to a possible linear trend.
+
+```{r}
+ggplot(food.reg.df, aes(x=year, y=`Food Pounds`)) + geom_boxplot()
+ggplot(food.reg.df, aes(x=as.numeric(year), y=`Food Pounds`)) + geom_smooth()
+ggplot(food.reg.df, aes(x=ndate, y=`Food Pounds`)) + geom_smooth() + geom_smooth(method = "lm")
+```
+
+However, plotting a generalized additive model (GAM) to the food data indicated that the amount of food provided did not change constantly over time, but rather varied greatly. However, it did seem to be the case that the amount of food provided did indeed increase over time, though not at a constant rate.
+
+```{r}
+ggplot(school.reg.df, aes(x=year, y=`School Kits`)) + geom_boxplot()
+ggplot(school.reg.df, aes(x=as.numeric(year), y=`School Kits`)) + geom_smooth()
+ggplot(school.reg.df, aes(x=ndate, y=`School Kits`)) + geom_smooth() + geom_smooth(method = "lm")
+```
+
+When plotting the GAM and linear model to the school kits data, I found that the amount of school kits provided did seem to increase at a constant rate over time. The GAM however seems to indicate that the amount of school kits provided has dropped slightly in the last couple years.
