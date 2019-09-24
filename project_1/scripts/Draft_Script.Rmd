@@ -15,8 +15,13 @@ library(data.table)
 
 ```{r}
 UMD.data=fread(file="C:/Users/alex/Documents/GitHub/bios611-projects-fall-2019-arquinter/project_1/data/UMD_Services_Provided_20190719.tsv")
-UMD.derived = mutate(UMD.data, ndate=as.Date(Date, "%m/%d/%Y"))
-food.reg.df = na.omit(select(UMD.derived, ndate, `Food Pounds`))
-school.reg.df = na.omit(select(UMD.derived, ndate, `School Kits`))
+UMD.derived = UMD.data %>% mutate(ndate=as.Date(Date, "%m/%d/%Y")) %>% mutate(year=as.factor(format(as.Date(Date, "%m/%d/%Y"), "%Y")))
+food.reg.df = na.omit(select(UMD.derived, ndate, year, `Food Pounds`)) %>%
+  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981")) %>% droplevels()
+school.reg.df = na.omit(select(UMD.derived, ndate, year, `School Kits`)) %>%
+  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981")) %>% droplevels()
 summary(lm(`Food Pounds`~ndate, data = food.reg.df))
+summary(aov(`Food Pounds`~year, data = food.reg.df))
+summary(lm(`School Kits`~ndate, data = school.reg.df))
+summary(aov(`School Kits`~year, data = school.reg.df))
 ```
