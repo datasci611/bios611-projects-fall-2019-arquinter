@@ -1,5 +1,8 @@
 ---
-title: "Untitled"
+title: "BIOS 611 Project 1"
+author:
+- Alexander Quinter
+date: "`r format(Sys.time(), '%d %B %Y')`"
 output: html_document
 ---
 
@@ -14,6 +17,7 @@ supplies the organization has provided to their clientele.
 
 
 ```{r, echo=FALSE}
+#Load in necessary packages
 library(tidyverse)
 library(ggplot2)
 library(data.table)
@@ -22,12 +26,17 @@ library(data.table)
 First, I decided to see if the amount of food and school supplies provided by the charity using two separate linear models. In both cases, I only used data starting from 1990, as this was the point when data started to be collected on a continuous basis. Additionally, I chose to run two separate models as the amount of times food was provided far exceeded the amount of times school supplies were provided, and to include them both in a single model would lead to the majority of food observations being dropped from the analysis, due to missing values for school supplies provided.   
 
 ```{r}
+#load in dataset
 UMD.data=fread(file="C:/Users/alex/Documents/GitHub/bios611-projects-fall-2019-arquinter/project_1/data/UMD_Services_Provided_20190719.tsv")
+
+#create analysis datasets
 UMD.derived = UMD.data %>% mutate(ndate=as.Date(Date, "%m/%d/%Y")) %>% mutate(year=as.factor(format(as.Date(Date, "%m/%d/%Y"), "%Y")))
 food.reg.df = na.omit(select(UMD.derived, ndate, year, `Food Pounds`)) %>%
-  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981"), `Food Pounds` < 1000) %>% droplevels()
+  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981", "2021", "2022"), `Food Pounds` < 1000) %>% droplevels()
 school.reg.df = na.omit(select(UMD.derived, ndate, year, `School Kits`)) %>%
-  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981")) %>% droplevels()
+  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981", "2021", "2022")) %>% droplevels()
+
+#obtain results of statistical analyses
 summary(lm(`Food Pounds`~ndate, data = food.reg.df))
 summary(aov(`Food Pounds`~year, data = food.reg.df))
 summary(lm(`School Kits`~ndate, data = school.reg.df))

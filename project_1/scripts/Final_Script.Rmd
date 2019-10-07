@@ -1,0 +1,77 @@
+---
+title: "BIOS 611 Project 1"
+author:
+- Alexander Quinter
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Introduction
+
+  Urban Ministries is a non-profit organization that seeks to provide food, job opportunities, and other services to the homeless community of Durham and the surrounding area. Using the data provided by UM, I hope to provide meaningful insight into how the services they provide have changed over time, particularly with respect to the amount of food and school
+supplies the organization has provided to their clientele.
+
+##Analyses
+
+```{r, echo=FALSE}
+#Load in necessary packages
+library(tidyverse)
+library(ggplot2)
+library(data.table)
+```
+
+  First, I decided to see if the amount of food and school supplies provided by the charity using two separate linear models. In both cases, I only used data starting from 1990, as this was the point when data started to be collected on a continuous basis. Additionally, I chose to run two separate models as the amount of times food was provided far exceeded the amount of times school supplies were provided, and to include them both in a single model would lead to the majority of food observations being dropped from the analysis, due to missing values for school supplies provided.   
+
+```{r}
+#load in dataset
+UMD.data=fread(file="C:/Users/alex/Documents/GitHub/bios611-projects-fall-2019-arquinter/project_1/data/UMD_Services_Provided_20190719.tsv")
+
+#create analysis datasets
+UMD.derived = UMD.data %>% mutate(ndate=as.Date(Date, "%m/%d/%Y")) %>% mutate(year=as.factor(format(as.Date(Date, "%m/%d/%Y"), "%Y")))
+food.reg.df = na.omit(select(UMD.derived, ndate, year, `Food Pounds`)) %>%
+  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981", "2021", "2022"), `Food Pounds` < 1000) %>% droplevels()
+school.reg.df = na.omit(select(UMD.derived, ndate, year, `School Kits`)) %>%
+  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981", "2021", "2022")) %>% droplevels()
+
+#obtain results of statistical analyses
+summary(lm(`Food Pounds`~ndate, data = food.reg.df))
+summary(aov(`Food Pounds`~year, data = food.reg.df))
+summary(lm(`School Kits`~ndate, data = school.reg.df))
+summary(aov(`School Kits`~year, data = school.reg.df))
+```
+
+  From the constructed ANOVA models, it was clear that the average amount of food and school supplies provided were not constant over time, but the significant value of the slope of the regression line pointed to a possible linear trend.
+
+```{r}
+#Create boxplots and models of relationship between Year and Pounds of Food Provided
+ggplot(food.reg.df, aes(x=year, y=`Food Pounds`, color = year)) + geom_boxplot() + theme_minimal() + theme(axis.text.x =  element_text(angle = 45), legend.position = "none") +
+  labs(x=expression('Year'), y=expression('Pounds of Food'),
+  title=expression('Boxplots of Distribution of Pounds of Food to Individuals/Family Units by Year'))
+ggplot(food.reg.df, aes(x=ndate, y=`Food Pounds`)) + geom_smooth(se=FALSE) + geom_smooth(method = "lm", se=FALSE, color='red') + 
+  theme_minimal() + labs(x=expression('Year'), y=expression('Pounds of Food'),
+  title=expression('Average Amount of Food Provided by UMD Individuals/Family vs. Year'))
+```
+
+  However, plotting a generalized additive model (GAM) to the food data indicated that the amount of food provided did not change constantly over time, but rather varied greatly. The advantage of plotting this GAM was that it makes the general trend of the data much clearer, though it is much less obvious how to interpret the exact relationship between pounds of food and year using the GAM. It did seem to be the case though that the amount of food provided increased over time, just not at a constant rate. I believe that the GAM is more preferable over the standard linear model, as while it is less interpretable, the lack of linearity in the data severely impairs the model's usefulness.
+
+```{r}
+#Create boxplots and models of relationship between Year and Number of School Kits Provided
+ggplot(school.reg.df, aes(x=year, y=`School Kits`, color=year)) + geom_boxplot() + theme_minimal() + theme(axis.text.x =  element_text(angle = 45), legend.position = "none") +
+  labs(x=expression('Year'), y=expression('Number of School Kits Provided'),
+  title=expression('Boxplots of Distribution of School Kits to Individuals/Family Units by Year'))
+ggplot(school.reg.df, aes(x=ndate, y=`School Kits`)) + geom_smooth(se=FALSE) + geom_smooth(method = "lm", se=FALSE, color='red') + 
+  theme_minimal() + labs(x=expression('Year'), y=expression('Pounds of Food'),
+  title=expression('Average Number of School Kits Provided by UMD vs. Year'))
+```
+
+  When plotting the GAM and linear model to the school kits data, I found that the amount of school kits provided did seem to increase at a constant rate over time. The GAM however seems to indicate that the amount of school kits provided has dropped slightly in the last couple years. Depending on whether prefers interpretability versus a better fit, it is more subjective as to whether the GAM or linear model should be used to model the data in this scenario.
+
+##Conclusion
+
+  From the first set of graphs above, it can be seen that, while the average amount of food that UMD has been providing to its clients has increased over time, the amount of food provided varies greatly from year to year, making it hard to both pick out any general trends in the data and to predict the average amount of food UMD will need to provide to its clients in the future. One way UMD could try and lessen the variation in the data in order to obtain accurate estimates for future needs would be to record the number of individuals in each family unit when food is taken, and then average the amount of food taken by the number of individuals.  
+  The second set of graphs seems to indicate that, in general, the amount of school kits needed by individuals and family units has been increasing over the years, and thus UMD may want to consider increasing their stock of school supplies to meet this increasing demand. This conclusion is hampered, however by the apparent decrease in the number of school kits provided by UMD in the past several years, since around 2015. It is unclear whether this latest trend is due to some change in how UMD provides school kits to its clientele, or if it is due to some external change in some other aspect of the Durham community. From these results, I hope that UMD will be able to make more informed decisions on how they can better provide the necessary amount of food and school supplies needed by their clientele as a whole.
+
