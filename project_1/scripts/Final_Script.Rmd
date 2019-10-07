@@ -64,7 +64,7 @@ ggplot(school.reg.df, aes(x=year, y=`School Kits`, color=year)) + geom_boxplot()
   labs(x=expression('Year'), y=expression('Number of School Kits Provided'),
   title=expression('Boxplots of Distribution of School Kits to Individuals/Family Units by Year'))
 ggplot(school.reg.df, aes(x=ndate, y=`School Kits`)) + geom_smooth(se=FALSE) + geom_smooth(method = "lm", se=FALSE, color='red') + 
-  theme_minimal() + labs(x=expression('Year'), y=expression('Pounds of Food'),
+  theme_minimal() + labs(x=expression('Year'), y=expression('Number of School Kits Provided'),
   title=expression('Average Number of School Kits Provided by UMD vs. Year'))
 ```
 
