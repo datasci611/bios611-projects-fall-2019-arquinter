@@ -6,8 +6,8 @@ library(shiny)
 library(httr)
 
 #load in dataset
-UMD.data=read.csv(file=GET("https://github.com/datasci611/bios611-projects-fall-2019-arquinter/tree/master/project_2/data/UMD_Services_Provided_20190719.tsv"))
-Durham.homeless.pop = read.csv(text=GET("https://github.com/datasci611/bios611-projects-fall-2019-arquinter/tree/master/project_2/data/Homeless_Population_Point_in_Time_Count.csv"))
+UMD.data=read_tsv("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-arquinter/master/project_2/data/UMD_Services_Provided_20190719.tsv", na="**")
+Durham.homeless.pop = read_csv("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-arquinter/master/project_2/data/Homeless_Population_Point_in_Time_Count.csv")
 Durham.homeless.counts = Durham.homeless.pop %>% filter(measures %in% c("Total Homeless", "Chronically Homeless", "Sheltered Homeless",
     "Sheltered Chronically Homeless", "Unsheltered Homeless", "Unsheltered Chronically Homeless"))
 

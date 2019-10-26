@@ -6,8 +6,11 @@
 #
 #    http://shiny.rstudio.com/
 #
+library(RCurl)
 
-source(GET("https://github.com/datasci611/bios611-projects-fall-2019-arquinter/tree/master/project_2/helper_functions.R"))
+script <- getURL("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-arquinter/master/project_2/helper_functions.R", ssl.verifypeer = FALSE)
+
+eval(parse(text = script))
 
 ui <- navbarPage("Navbar",
                  tabPanel("Plot",
