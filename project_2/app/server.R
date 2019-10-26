@@ -1,40 +1,22 @@
 #
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
+# This is the server logic of a Shiny web application. You can run the 
+# application by clicking 'Run App' above.
 #
 # Find out more about building applications with Shiny here:
-#
+# 
 #    http://shiny.rstudio.com/
 #
+
+library(shiny)
+
 library(RCurl)
-library(rsconnect)
 
 script <- getURL("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-arquinter/master/project_2/helper_functions.R", ssl.verifypeer = FALSE)
 
 eval(parse(text = script))
 
-ui <- navbarPage("Navbar",
-                 tabPanel("Plot",
-                          sidebarLayout(
-                            sidebarPanel(
-                              radioButtons("org", "Organization",
-                                           c("Total Homeless"="Total Homeless", "Chronically Homeless"="Chronically Homeless",
-                                             "Sheltered Homeless" = "Sheltered Homeless", "Sheltered Chronically Homeless" = 
-                                               "Sheltered Chronically Homeless", "Unsheltered Homeless" = "Unsheltered Homeless",
-                                             "Unsheltered Chronically Homeless" = "Unsheltered Chronically Homeless")
-                              )
-                            ),
-                            mainPanel(
-                              plotOutput("countplot")
-                            )
-                          )
-                 )
-)
-
-
-
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+ShinyServer <- function(input, output) {
   
   output$countplot <- renderPlot({
     
@@ -50,5 +32,3 @@ server <- function(input, output) {
     
   })
 }
-
-shinyApp(ui = ui, server = server)

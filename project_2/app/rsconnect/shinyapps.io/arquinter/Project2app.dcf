@@ -1,0 +1,12 @@
+name: Project2app
+title: Project2app
+username:
+account: arquinter
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1384665
+bundleId: 2539423
+url: https://arquinter.shinyapps.io/Project2app/
+when: 1572130766.9965
+asMultiple: FALSE
+asStatic: FALSE
