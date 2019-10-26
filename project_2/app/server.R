@@ -9,6 +9,17 @@
 
 library(shiny)
 
+library(RCurl)
+library(tidyverse)
+library(ggplot2)
+library(data.table)
+library(shiny)
+library(httr)
+
+script <- getURL("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-arquinter/master/project_2/helper_functions.R", ssl.verifypeer = FALSE)
+
+eval(parse(text = script))
+
 # Define server logic required to draw a histogram
 ShinyServer <- function(input, output) {
   

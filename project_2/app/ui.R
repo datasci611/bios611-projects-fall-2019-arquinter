@@ -9,12 +9,6 @@
 
 library(shiny)
 
-library(RCurl)
-
-script <- getURL("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-arquinter/master/project_2/helper_functions.R", ssl.verifypeer = FALSE)
-
-eval(parse(text = script))
-
 # Define UI for application that draws a histogram
 shinyUI(navbarPage("Navbar",
                    tabPanel("Plot",
