@@ -5,6 +5,6 @@ account: arquinter
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1384516
-bundleId: 2539351
+bundleId: 2539357
 url: https://arquinter.shinyapps.io/project_2/
-when: 1572128182.44355
+when: 1572128372.97951
