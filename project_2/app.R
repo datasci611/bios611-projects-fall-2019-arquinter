@@ -7,7 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 
-source("C:/Users/alex/Documents/GitHub/bios611-projects-fall-2019-arquinter/project_2/helper_functions.R")
+source(GET("https://github.com/datasci611/bios611-projects-fall-2019-arquinter/tree/master/project_2/helper_functions.R"))
 
 ui <- navbarPage("Navbar",
                  tabPanel("Plot",
