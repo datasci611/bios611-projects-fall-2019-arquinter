@@ -8,7 +8,6 @@
 #
 
 library(shiny)
-
 library(RCurl)
 library(tidyverse)
 library(ggplot2)
