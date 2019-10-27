@@ -17,3 +17,6 @@ food.reg.df = na.omit(select(UMD.derived, ndate, year, `Food Pounds`)) %>%
   filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981", "2021", "2022"), `Food Pounds` < 1000) %>% droplevels()
 school.reg.df = na.omit(select(UMD.derived, ndate, year, `School Kits`)) %>%
   filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981", "2021", "2022")) %>% droplevels()
+Size.reg.df = na.omit(select(UMD.derived, ndate, year, `Food Provided for`)) %>%
+  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981", "2021", "2022"), `Food Provided for` <= 20) %>%
+  droplevels() %>% group_by(year) %>% summarise(ave=mean(`Food Provided for`))

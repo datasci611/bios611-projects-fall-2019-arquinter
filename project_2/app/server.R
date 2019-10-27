@@ -22,7 +22,7 @@ eval(parse(text = script))
 # Define server logic required to draw a histogram
 ShinyServer <- function(input, output) {
   
-  output$countplot <- renderPlot({
+  output$countplot = renderPlot({
     
     data = switch(input$org,
                   "Total Homeless" = Durham.homeless.counts[Durham.homeless.counts[,5]=="Total Homeless",],
@@ -34,5 +34,10 @@ ShinyServer <- function(input, output) {
     
     ggplot(data, aes(x=year, y=count_)) + geom_bar(stat = "identity")
     
+  })
+  
+  output$lineg = renderPlot({
+    ggplot(Size.reg.df, aes(x=as.numeric(as.character(year)), y=ave)) + geom_point() + geom_line() +
+      xlim(input$year[1], input$year[2])
   })
 }

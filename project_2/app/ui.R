@@ -25,6 +25,11 @@ shinyUI(navbarPage("Navbar",
                                 plotOutput("countplot")
                               )
                             )
-                   )
+                   ),
+                   tabPanel("LineG",
+                            sliderInput("year", "Year Range", min=1990,
+                                        max=2019, value = c(2000, 2019)
+                                        ),
+                              plotOutput("lineg"))
 )
 )
