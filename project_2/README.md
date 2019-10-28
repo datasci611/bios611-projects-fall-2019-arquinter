@@ -2,10 +2,13 @@ Shiny App Link:
 
 https://arquinter.shinyapps.io/Project2app/
 
+
 Data:
 
 UMD data - provided directly by UMD
+
 Durham Homeless Populations API - https://live-durhamnc.opendata.arcgis.com/datasets/homeless-population-point-in-time-count
+
 
 Alexander Quinter
 
