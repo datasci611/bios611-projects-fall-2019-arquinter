@@ -14,7 +14,8 @@ Durham.homeless.counts = Durham.homeless.pop %>% filter(measures %in% c("Total H
 #create analysis datasets
 UMD.derived = UMD.data %>% mutate(ndate=as.Date(Date, "%m/%d/%Y")) %>% mutate(year=as.factor(format(as.Date(Date, "%m/%d/%Y"), "%Y")))
 food.reg.df = na.omit(select(UMD.derived, ndate, year, `Food Pounds`)) %>%
-  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981", "2021", "2022"), `Food Pounds` < 1000) %>% droplevels()
+  filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981", "2021", "2022"), `Food Pounds` < 1000) %>% droplevels() %>%
+  group_by(year) %>% summarise(ave=mean(`Food Pounds`))
 school.reg.df = na.omit(select(UMD.derived, ndate, year, `School Kits`)) %>%
   filter(!year %in% c("1931", "1941", "1951", "1961", "1971", "1981", "2021", "2022")) %>% droplevels()
 Size.reg.df = na.omit(select(UMD.derived, ndate, year, `Food Provided for`)) %>%

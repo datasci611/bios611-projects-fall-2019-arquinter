@@ -14,6 +14,7 @@ library(ggplot2)
 library(data.table)
 library(shiny)
 library(httr)
+library(RColorBrewer)
 
 script <- getURL("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-arquinter/master/project_2/helper_functions.R", ssl.verifypeer = FALSE)
 
@@ -32,12 +33,19 @@ ShinyServer <- function(input, output) {
                   "Unsheltered Homeless" = Durham.homeless.counts[Durham.homeless.counts[,5]=="Unsheltered Homeless",],
                   "Unsheltered Chronically Homeless" = Durham.homeless.counts[Durham.homeless.counts[,5]=="Unsheltered Chronically Homeless",])
     
-    ggplot(data, aes(x=year, y=count_)) + geom_bar(stat = "identity")
+    ggplot(data, aes(x=year, y=count_, fill=as.factor(year))) + geom_bar(stat = "identity") + theme_minimal() + theme(legend.position = "none") +
+      scale_fill_brewer(palette = "Spectral")
     
   })
   
   output$lineg = renderPlot({
-    ggplot(Size.reg.df, aes(x=as.numeric(as.character(year)), y=ave)) + geom_point() + geom_line() +
-      xlim(input$year[1], input$year[2])
+    ggplot(Size.reg.df, aes(x=as.numeric(as.character(year)), y=ave)) + geom_point(color = "Blue") + geom_line(color = "Red") +
+      xlim(input$year[1], input$year[2]) + theme_minimal() + labs(x="Year", y="Average Group Size",
+        title="Average Number of People in Group when Food is Provided Over Time")
+  })
+  output$lineg2 = renderPlot({
+    ggplot(food.reg.df, aes(x=as.numeric(as.character(year)), y=ave)) + geom_point(color = "Green") + geom_line(color = "Yellow") +
+      xlim(input$year[1], input$year[2]) + theme_minimal() + labs(x="Year", y="Average Group Size",
+                                                                  title="Average Pounds of Food Provided per Group Over Time")
   })
 }
