@@ -10,11 +10,11 @@
 library(shiny)
 
 # Define UI for application that draws a histogram
-shinyUI(navbarPage("Navbar",
-                   tabPanel("Plot",
+shinyUI(navbarPage("BIOS 611 Project 2",
+                   tabPanel("Number of Homeless Individuals in the Durham Area Over Time by Category",
                             sidebarLayout(
                               sidebarPanel(
-                                radioButtons("org", "Organization",
+                                radioButtons("org", "Category",
                                              c("Total Homeless"="Total Homeless", "Chronically Homeless"="Chronically Homeless",
                                                "Sheltered Homeless" = "Sheltered Homeless", "Sheltered Chronically Homeless" = 
                                                  "Sheltered Chronically Homeless", "Unsheltered Homeless" = "Unsheltered Homeless",
@@ -26,12 +26,12 @@ shinyUI(navbarPage("Navbar",
                               )
                             )
                    ),
-                   tabPanel("LineG",
+                   tabPanel("Average Group Size Served Over Time",
                             sliderInput("year", "Year Range", min=1990,
                                         max=2019, value = c(2000, 2019)
                                         ),
                               plotOutput("lineg")),
-                   tabPanel("LineG2",
+                   tabPanel("Average Amount of Food Provided Over Time",
                             sliderInput("year", "Year Range", min=1990,
                                         max=2019, value = c(2000, 2019)
                             ),

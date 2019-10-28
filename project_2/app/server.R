@@ -34,7 +34,8 @@ ShinyServer <- function(input, output) {
                   "Unsheltered Chronically Homeless" = Durham.homeless.counts[Durham.homeless.counts[,5]=="Unsheltered Chronically Homeless",])
     
     ggplot(data, aes(x=year, y=count_, fill=as.factor(year))) + geom_bar(stat = "identity") + theme_minimal() + theme(legend.position = "none") +
-      scale_fill_brewer(palette = "Spectral")
+      scale_fill_brewer(palette = "Spectral") + labs(x="Year", y="Number of Homeless Individuals",
+                                                     title="Estimated Number of Homeless Individuals Over Time")
     
   })
   
@@ -43,9 +44,10 @@ ShinyServer <- function(input, output) {
       xlim(input$year[1], input$year[2]) + theme_minimal() + labs(x="Year", y="Average Group Size",
         title="Average Number of People in Group when Food is Provided Over Time")
   })
+  
   output$lineg2 = renderPlot({
-    ggplot(food.reg.df, aes(x=as.numeric(as.character(year)), y=ave)) + geom_point(color = "Green") + geom_line(color = "Yellow") +
-      xlim(input$year[1], input$year[2]) + theme_minimal() + labs(x="Year", y="Average Group Size",
+    ggplot(food.reg.df, aes(x=as.numeric(as.character(year)), y=ave)) + geom_point(color = "Green") + geom_line(color = "Orange") +
+      xlim(input$year[1], input$year[2]) + theme_minimal() + labs(x="Year", y="Average Pounds of Food Provided",
                                                                   title="Average Pounds of Food Provided per Group Over Time")
   })
 }
