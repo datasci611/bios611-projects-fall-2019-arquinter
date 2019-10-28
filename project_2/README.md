@@ -1,6 +1,14 @@
+Shiny App Link:
+
 https://arquinter.shinyapps.io/Project2app/
+
+Data:
+
+UMD data - provided directly by UMD
+Durham Homeless Populations API - https://live-durhamnc.opendata.arcgis.com/datasets/homeless-population-point-in-time-count
 
 Alexander Quinter
 
 Urban Ministries is a non-profit organization that seeks to provide food, job opportunities, and other services to the homeless community of Durham and the surrounding area. Using the data provided by UM, I hope to provide meaningful insight into the services they provide have changed over time, as well as how their services are being utilized
-currently. Three variables in the dataset that I believe will be of great importance when analyzing the data are the "Date", "Food.Provided.for", and "Clothing.Items" variables. I currently plan to perform two separate longitudinal analyses on how the amount of food and clothing items provided by UM respectively have changed over time. Upon conducting these analyses, I plan to use R Shiny to make 2 interactive graphs that use a slider to display the average Food Consumption or Clothing Items provided per year, respectfully. I also plan to generate an interactive display comparing average food consumption vs clothing items provided.
+currently. Three variables in the dataset that I believe will be of great importance when analyzing the data are the "Date", "Food.Provided.for", and "Food" variables. I currently plan to perform two separate longitudinal analyses on how the amount of food and clothing items provided by UM respectively have changed over time. To supplement a heuristic analysis of these graphs, I have downloaded the "Homeless Population Point in Time Count" dataset from the Durham Open Data website,
+which provides estimated counts of various homeless populations in the Durham area from 2007 to 2016. Upon conducting these analyses, I plan to use R Shiny to make 2 interactive graphs that use a slider to display the average Food Consumption or Food Provide provided per year, respectfully. I also plan to generate an interactive display giving the Estimated Population Count of homeless populations in the Durham area.
