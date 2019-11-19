@@ -1,0 +1,39 @@
+---
+title: "Untitled"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Introduction
+
+  Urban Ministries is a non-profit organization that seeks to provide food, job opportunities, and other services to the homeless community of Durham and the surrounding area. Using the data provided by UM, I hope to provide meaningful insight into how the services they provide are affected by various social logical factors, such as age, race, and gender.
+
+
+```{r, echo=FALSE}
+#Load in necessary packages
+library(tidyverse)
+library(ggplot2)
+library(data.table)
+```
+
+```{r}
+#load in dataset
+client.data=fread(file="C:/Users/alex/Documents/GitHub/datasci611/data/project2_2019/CLIENT_191102.tsv") %>% select(`Client Unique ID`, `Client Age at Entry`, `Client Gender`, `Client Primary Race`, `Client Ethnicity`)
+disability.data=fread(file="C:/Users/alex/Documents/GitHub/datasci611/data/project2_2019/DISABILITY_ENTRY_191102.tsv")
+analysis.data = disability.data %>% left_join(client.data, by = "Client Unique ID") %>% distinct() %>% mutate(counts = as.numeric(as.factor(`Disability Type (Entry)`)))
+for(i in 1:nrow(analysis.data)){
+if(analysis.data[i,5] == "No (HUD)"){
+  analysis.data[i,16] = 0
+}}
+```
+
+```{r}
+ggplot(analysis.data, aes(x=counts)) + geom_bar(stat = "bin")
+```
+
+It would appear that overall, the most common disability among UMD's clients are mental health problems.
