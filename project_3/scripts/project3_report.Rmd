@@ -1,0 +1,99 @@
+---
+title: "Untitled"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Introduction
+
+  Urban Ministries is a non-profit organization that seeks to provide food, job opportunities, and other services to the homeless community of Durham and the surrounding area. I believe that how long clients stay with UMD is a key measure of UMD's overall performance, as it is an overall reflection of the amount of time it takes for UMD to assist their clients until said clients are self-sufficient. Besides demographic factors, I believe that what disabilities the clients have, if any, may also be associated with the length of their stay. Specifically, I decided to look at the disabilities that had been defined by Housing and Urban DEvelopment (HUD), as these are ones that are broadly used and recognized. I was also curious as to whether any demographic factors seemed to be related to what kinds of disabilities clients may have, and what factors, if any, were associated with clients who had a disability when they started their stay at UMD, but no longer had one at the time of their exit. Using a logistic regression, I plan to identify potential factors associated with this phenomenon, so that UMD may identify what areas are most likely to assist clients with treatable disabilities. Using these analyses, I hope for UMD to gain a better understanding of how disabilities affect clients and subsequently improve their services to better aid them.
+
+
+```{r, echo=FALSE}
+#Load in necessary packages
+library(ggplot2)
+library(data.table)
+```
+
+```{r}
+#load in dataset
+analysis.data = fread(file="C:/Users/alex/analysis_data.csv")
+```
+
+##Analysis
+
+First, I decided to look at client counts by race and by gender in order to get an understanding of the general demographic makeup of UMD's client base.
+
+```{r}
+ggplot(analysis.data, aes(x=`Client Primary Race`)) + geom_bar(stat="count", fill = "forestgreen") + theme_minimal() + labs(x = "Race", y = "Count") + ggtitle("Client Count by Race") + theme(axis.text.x =  element_text(angle = 90), plot.title = element_text(hjust=0.5))
+ggplot(analysis.data, aes(x=`Client Gender`)) + geom_bar(stat="count", fill = "yellow3") + theme_minimal() + labs(x = "Gender", y = "Count") + ggtitle("Client Count by Gender") + theme(axis.text.x =  element_text(angle = 90), plot.title = element_text(hjust=0.5))
+```
+
+From the graphs above, it appears that most of UMD's clients are African American/Black and male, while less than half are white, American Indian, or female. Thus, as the demographics aren't balanced, statistical analyses that do not account for said inbalance may be inaccurate, if it turns out that the results of said analyses depend upon client gender or race.
+
+To get a better idea as to whether or not this imbalance was the same across the different kinds of disabilities, or if it was actually further unbalanced and differed between each disability, I looked at graphs of the counts of how many people had each disability and stratified said graphs based on race and gender, respectively. This also allowed me to get an overall view of the frequency with which each disability occurs, and whether there were any disabilities that appeared to be more common than others.
+
+```{r}
+ggplot(analysis.data, aes(x=`Drug Abuse_Entry`)) + geom_bar(aes(fill=`Client Primary Race`),stat = "count") + labs(x="Classification", y="Number of Clients", fill = "Race") + ggtitle("Disability at Entry: Drug Abuse") + theme_minimal()
+ggplot(analysis.data, aes(x=`Alcohol Abuse_Entry`)) + geom_bar(aes(fill=`Client Primary Race`),stat = "count") + labs(x="Classification", y="Number of Clients", fill = "Race") + ggtitle("Disability at Entry: Alcohol Abuse") + theme_minimal()
+ggplot(analysis.data, aes(x=`Developmental_Entry`)) + geom_bar(aes(fill=`Client Primary Race`),stat = "count") + labs(x="Classification", y="Number of Clients", fill = "Race") + ggtitle("Disability at Entry: Developmental") + theme_minimal()
+ggplot(analysis.data, aes(x=`Mental Health Problem_Entry`)) + geom_bar(aes(fill=`Client Primary Race`),stat = "count") + labs(x="Classification", y="Number of Clients", fill = "Race") + ggtitle("Disability at Entry: Mental Health Problem") + theme_minimal()
+ggplot(analysis.data, aes(x=`Other_Entry`)) + geom_bar(aes(fill=`Client Primary Race`),stat = "count") + labs(x="Classification", y="Number of Clients", fill = "Race") + ggtitle("Disability at Entry: Other") + theme_minimal()
+ggplot(analysis.data, aes(x=`Drug Abuse_Entry`)) + geom_bar(aes(fill=`Client Gender`),stat = "count") + labs(x="Classification", y="Number of Clients", fill = "Gender") + ggtitle("Disability at Entry: Drug Abuse") + theme_minimal()
+ggplot(analysis.data, aes(x=`Alcohol Abuse_Entry`)) + geom_bar(aes(fill=`Client Gender`),stat = "count") + labs(x="Classification", y="Number of Clients", fill="Gender") + ggtitle("Disability at Entry: Alcohol Abuse") + theme_minimal()
+ggplot(analysis.data, aes(x=`Developmental_Entry`)) + geom_bar(aes(fill=`Client Gender`),stat = "count") + labs(x="Classification", y="Number of Clients", fill = "Gender") + ggtitle("Disability at Entry: Developmental") + theme_minimal()
+ggplot(analysis.data, aes(x=`Mental Health Problem_Entry`)) + geom_bar(aes(fill=`Client Gender`),stat = "count") + labs(x="Classification", y="Number of Clients", fill = "Gender") + ggtitle("Disability at Entry: Mental Health Problem") + theme_minimal()
+ggplot(analysis.data, aes(x=`Other_Entry`)) + geom_bar(aes(fill=`Client Gender`),stat = "count") + labs(x="Classification", y="Number of Clients", fill = "Gender") + ggtitle("Disability at Entry: Other") + theme_minimal()
+```
+
+From the above graphs, it does not seem that either age or gender is distributed differently between the different disabilities. However, it does appear that Mental Health Problems are far more common among UMD's client base than any other disability. Thus, it may be in UMD's best interest to focus on providing programs that can assist on helping clients with mental health issues.
+
+After conducting this preliminary investigation, I decided to perform a logistic regression to determine if any demographic factors were associated with whether or not a client had any disabilities when they first entered UMD.
+
+```{r}
+summary(glm(as.factor(`Disability_Entry`)~as.factor(`Client Gender`)+as.factor(`Client Primary Race`)+`Client Age at Entry`+as.factor(`Client Ethnicity`)+as.factor(`Client Veteran Status`), data = analysis.data, family = "binomial"))
+```
+
+The above regression found that client gender, race, and age had a statistically significant association with the probability that a client had a disability when entering UMD. Specifically, males had $1-e^{-0.468374} = 37.4%$ lower odds of having a disability than females, white individuals had $e^{0.650568} = 91.2$ greater odds of having a disability than african american/black individuals, and a 1 year increase in age was associated with $e^{0.029878} = 3%$ greater odds of having a disability. The regression also found that being a trans-female was also statistically significant, but due to the low amount of trans-females in the sample compared to males and females, this find may not be accurate and was thus ignored. Thus, UMD may want to look into providing more in depth disability services for individuals that are more likely to have a disability, i.e. whites, females, and older clients.
+
+Now, I wanted to determine which demographic characteristics, if any, could be related to whether or not a client who had at least one disability when they joined UMD no longer had any by the time they exited UMD.
+
+```{r}
+summary(glm(as.factor(`Disability_Change`)~as.factor(`Client Gender`)+as.factor(`Client Primary Race`)+`Client Age at Entry`+as.factor(`Client Ethnicity`)+as.factor(`Client Veteran Status`), data = analysis.data, family = "binomial"), control = list(maxit=50))
+```
+
+However, there were too few individuals that had changed from having at least 1 disability to having none, so that the computer algorithm for the model was unable to converge. Thus, any further statistical inference on this issue using the above model was not possible.
+
+I then conducted my analysis of primary interest, i.e., what factors are associated with how long a client stays with UMD. I wanted to see if not only demographic factors but if or what disabilities were associated with a client's length of stay. I first looked at a histogram of the lengths of clients' stays to get an overall idea of how long clients tended to stay.
+
+```{r}
+ggplot(data = analysis.data, aes(x=dur)) + geom_histogram(aes(y=..density..), fill="gold2") + geom_density(color="chartreuse4") + theme_minimal() + labs(x="Duration of Stay (Days)", y="Frequency") + ggtitle("Histogram of Length of Client Stay") + theme(plot.title = element_text(hjust=0.5))
+```
+
+From the histogram, it seems that the majority of clients tend to stay for between 0-100 days, and that increased stay length was associated with a decreased amount of clients.
+
+```{r}
+summary(lm(dur~as.factor(`Client Gender`)+as.factor(`Client Primary Race`)+`Client Age at Entry`+as.factor(`Client Ethnicity`)+as.factor(`Client Veteran Status`) +as.factor(`Alcohol Abuse_Entry`)+as.factor(`Drug Abuse_Entry`)+as.factor(`Developmental_Entry`)+as.factor(`Mental Health Problem_Entry`)+as.factor(`Other_Entry`), data = analysis.data))
+```
+
+From the above model, I found that gender, age, and Mental Health Problems were all statistically significantly associated with length of stay. Specifically, the model indicates that males stay on average for 6.5 less days than females, clients with Mental Health Problems stayed on average for 5 less days than clients who did not have mental health problems, and a 1 year increase in client age was associated with an average increase in stay length of 0.58 days. It is not immediately clear as to why these factors may be associated with length of stay. It may be that women stay longer on average than males as they have children with them, but this is merely a conjecture. UMD may want to look into why these factors are associated with stay duration so they can understand what they can be changed such that it takes less time for clientele to be self-sufficient.
+
+As the p-value for client age was the smallest, i.e., age was the most "significant" factor, I decided to look further into how age is distributed in the population and its relationship with stay duration.
+
+```{r}
+ggplot(data = analysis.data, aes(x=`Client Age at Entry`)) + geom_histogram(aes(y=..density..), fill="darkcyan") + geom_density(color="orangered4") + theme_minimal() + labs(x="Age", y="Frequency") + ggtitle("Histogram of Age of Client at Entry") + theme(plot.title = element_text(hjust=0.5))
+ggplot(analysis.data, aes(x=`Client Age at Entry`, y=dur)) + geom_smooth(se=FALSE, color = "steelblue4") + geom_smooth(method = "lm", se=FALSE, color='darkred') + geom_point(shape = 1) + theme_minimal() + labs(x="Age", y="Duration of Client Stay (Days)") + ggtitle("Plot of Length of Client Stay Against Client Age") + theme(plot.title = element_text(hjust=0.5))
+```
+
+From the above histogram, it seems that client age is somewhat evenly distributed, though it seems that there are more people of about age 50 than there are of other ages, and that there are few clients at UMD above age 60. The second graph plots the ages of all individuals against their respective stay lengths, and provides a regression line and smoothed kernel line of the relationship between age and stay duration. Though the the slope of the regression line is indeed significant, the data points themselves do not seem to follow any sort of pattern linear or otherwise, indicating that there might not actually be a relationship between age and stay duration. Looking at the plot, There seems to be an outlier where a client stayed for over 800 days, which may have contributed to why the linear regression was statistically significant.
+
+##Conclusion
+
+Based upon my analysis, most clients of UMD are black males. While it does not seem that there are any disabilities that are more prevalent among one race or gender than others, mental health problems are far more common among UMD's clientele than any other disability and hence, UMD may want to consider focusing their disability services on assisting those with mental health issues. Also, it seems that client gender, race, and age are associated with whether or not the client has a disability. Thus, UMD may want to consider looking into possible reasons why these factors are related to the odds of having a disability, in order to provide better assistance to their disabled clients. Additionally, I found that age, gender, and mental health problems were associated with how long clients stayed with UMD. As age appeared to be the most significant, I decided to look further into its relationship with duration, and found that there did not seem to actually be any relationship at all. Thus, it would be in UMD's interest to look into why gender and mental health problems are related to length of stay, in order to better understand what can be done to help their clients become self-sufficient sooner. In conclusion, I hope that, using this report, UMD will be able to gain a better understanding of how demographic factors and disabilities affect their clients, and thus find new methods or improve upon current ones that will allow them to better assist their clientele.
+
+
