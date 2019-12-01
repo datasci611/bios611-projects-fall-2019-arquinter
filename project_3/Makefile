@@ -10,7 +10,7 @@ scripts/proj3_wrangling.py: pull-pandas \ script/project3_wrangling.ipynb
 
 	jupyter nbconvert --to python script/proj3_wrangling.ipynb
 
-results/project3_report.html:
+results/project3_report.html: scripts/project3_report.Rmd
 
 	docker run -it --rm \
 
