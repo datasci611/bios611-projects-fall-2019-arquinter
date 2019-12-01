@@ -1,7 +1,0 @@
-git clone https://github.com/biodatascience/datasci611/
-
-cd /home/alexq/datasci611
-
-git checkout gh-pages
-
-cd /home/alexq/datasci611/data/project2_2019

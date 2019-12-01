@@ -1,5 +1,7 @@
 ---
-title: "Untitled"
+title: "Project 3"
+author:
+- Alexander Quinter
 output:
   html_document:
     df_print: paged
