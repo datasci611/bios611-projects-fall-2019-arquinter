@@ -1,0 +1,9 @@
+** Project 3 Grade
+
+   Average Feedback Score - 15/15
+   Average Presentation Score - 85/100
+   Grader Score - 20/30: followed make instructions but target failed
+   
+   Final Grade - 76.33
+
+
